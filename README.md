@@ -1,6 +1,6 @@
 # Docker BELK stack
 
-This fork is meant to be used with KIPP, having the filebeat running on KIPP maching and the ELK stack on Docker or otherwise running on a different machine/cluster.
+This fork is meant to be used with KIPP, having the filebeat running on KIPP machine and the ELK stack on Docker or otherwise running on a different machine/cluster.
 
 TODO: Need to clean up the rest of this README below.
 
