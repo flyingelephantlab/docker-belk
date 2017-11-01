@@ -1,17 +1,18 @@
-logging.level: info 
+logging.level: info
 
 filebeat.prospectors:
 
 - type: log
   paths:
-    - /var/kipp/logs/**/*.log
-  include_lines: ['.Spider opened', '.ERROR', '.Dropped: Item is not valid', '.DEBUG: Scraped from', '.WARNING: Item at url']
+    - {{ kipp_log_dir }}/**/*.log
+  include_lines: ['.logstats', '.Spider opened', '.ERROR', '.Dropped: Item is not valid', '.DEBUG: Scraped from', '.WARNING: Item at url']
   #exclude_lines: ['.Spider closed', '.statscollectors.']
   exclude_files: ['.live_extractor', '.scrapyd', '.polipo', '.kipp_', 'test']
-  enabled: true 
+  enabled: true
   fields_under_root: true
   fields:
     spider_state: "running"
+    country: "{{ kipp_env_vars['COUNTRY'] }}"
   multiline:
     pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]][0-9]{2}:[0-9]{2}:[0-9]{2}[[:space:]]'
     negate: true
@@ -19,7 +20,7 @@ filebeat.prospectors:
 
 - type: log
   paths:
-    - /var/kipp/logs/**/*.log
+    - {{ kipp_log_dir }}/**/*.log
   include_lines: ['.statscollectors']
   #exclude_lines: ['.errors detected', '.ERROR', '.Spider closed', '.Dropped: Item is not valid', '.DEBUG: Scraped from', '.WARNING: Item at url']
   exclude_files: ['.live_extractor', '.scrapyd', '.polipo', '.kipp_', 'test']
@@ -27,6 +28,7 @@ filebeat.prospectors:
   fields_under_root: true
   fields:
     spider_state: "finished"
+    country: "{{ kipp_env_vars['COUNTRY'] }}"
   multiline:
     pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]][0-9]{2}:[0-9]{2}:[0-9]{2}[[:space:]]'
     negate: true
@@ -34,7 +36,7 @@ filebeat.prospectors:
 
 - type: log
   paths:
-    - /var/kipp/logs/**/*.log
+    - {{ kipp_log_dir }}/**/*.log
   include_lines: ['.Spider closed']
   #exclude_lines: ['.Spider opened', '.ERROR', '.Dropped: Item is not valid', '.DEBUG: Scraped from', '.WARNING: Item at url']
   exclude_files: ['.live_extractor', '.scrapyd', '.polipo', '.kipp_', 'test']
@@ -42,6 +44,7 @@ filebeat.prospectors:
   fields_under_root: true
   fields:
     spider_state: "closed"
+    country: "{{ kipp_env_vars['COUNTRY'] }}"
   multiline:
     pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]][0-9]{2}:[0-9]{2}:[0-9]{2}[[:space:]]'
     negate: true
@@ -50,4 +53,3 @@ filebeat.prospectors:
 
 output.logstash:
   hosts: ["192.168.1.94:5045"]
-
